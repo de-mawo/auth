@@ -1,5 +1,5 @@
 import React from "react";
-import UserButton from "./UserButton";
+import UserButton from "./user-button";
 
 
 export default function Header() {
