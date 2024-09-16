@@ -12,5 +12,14 @@ export const loginSchema = z.object({
   password: requiredString,
 });
 
+export const tokenSchema = z.object({
+  userId: requiredString,
+  token: z.string().min(6, {
+    message: "Your one-time password must be 6 characters.",
+  }),
+
+});
+
 export type SignUpValues = z.infer<typeof signUpSchema>;
 export type LoginValues = z.infer<typeof loginSchema>;
+export type TokenValues = z.infer<typeof tokenSchema>;

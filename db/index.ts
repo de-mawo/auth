@@ -7,11 +7,8 @@ config({ path: ".env.local" });
 
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
-  ssl:
-    process.env.NODE_ENV === "production"
-      ? { rejectUnauthorized: true }
-      : { rejectUnauthorized: false },
+  
 });
 
-await client.connect();
+client.connect();
 export const db = drizzle(client, { schema });

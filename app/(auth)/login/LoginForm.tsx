@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
@@ -25,8 +25,12 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import LoadingBtn from "@/components/LoadingBtn";
 import { loginSchema, LoginValues } from "@/lib/validations";
+import { PasswordInput } from "../password-input";
+import { loginAction } from "../actions";
+import { toast } from "@/hooks/use-toast";
 
 export function LoginForm() {
+  const [error, setError] = useState<string>();
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<LoginValues>({
@@ -38,7 +42,15 @@ export function LoginForm() {
   });
 
   async function onSubmit(values: LoginValues) {
-    console.log(values);
+    setError(undefined);
+    startTransition(async () => {
+      const { error } = await loginAction(values);
+      if (error) setError(error);
+    });
+    toast({
+      variant: "destructive",
+      title: `${error}`,
+    });
   }
 
   return (
@@ -82,7 +94,7 @@ export function LoginForm() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input placeholder="Password" {...field} />
+                      <PasswordInput placeholder="Password" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -94,7 +106,7 @@ export function LoginForm() {
             </form>
           </Form>
         </div>
-        <div className="mt-4 text-center text-muted-foreground text-sm">
+        <div className="mt-4 text-center text-sm text-muted-foreground">
           Don&apos;t have an account?{" "}
           <Link href="#" className="underline">
             Sign up

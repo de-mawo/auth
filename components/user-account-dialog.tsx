@@ -14,16 +14,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function UserAccountDialog({
-  isOpen,
-  setIsOpen,
-}: {
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [activeTab, setActiveTab] = useState("profile");
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog >
       <DialogTrigger asChild className="w-full">
         <p>User Account </p>
       </DialogTrigger>

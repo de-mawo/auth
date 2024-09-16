@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,24 +9,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, Settings, User } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 import UserAccountDialog from "./user-account-dialog";
+import { logoutAction } from "@/app/(auth)/actions";
+import { User } from "lucia";
 
-export default function UserButton() {
-  const [viewAccountOpen, setViewAccountOpen] = useState(false);
-
-  // Placeholder user data
-  const user = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    avatarUrl: "/placeholder.svg?height=32&width=32",
-  };
-
+export default function UserButton({ user }: { user: User }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="h-8 w-8">
-          <AvatarImage src={user.avatarUrl} alt={user.name} />
+          <AvatarImage src={user.avatar} alt={user.name} />
           <AvatarFallback>
             {user.name
               .split(" ")
@@ -44,7 +35,7 @@ export default function UserButton() {
       >
         <DropdownMenuLabel className="flex items-center space-x-4 font-normal">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user.avatarUrl} alt={user.name} />
+            <AvatarImage src={user.avatar} alt={user.name} />
             <AvatarFallback>
               {user.name
                 .split(" ")
@@ -62,13 +53,16 @@ export default function UserButton() {
         <DropdownMenuSeparator />
         <DropdownMenuItem className="p-4" onClick={(e) => e.preventDefault()}>
           <Settings className="mr-2 h-4 w-4" />
-          <UserAccountDialog
-            isOpen={viewAccountOpen}
-            setIsOpen={setViewAccountOpen}
-          />
+          <UserAccountDialog />
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="p-4">
+        <DropdownMenuItem
+          className="p-4"
+          onClick={(e) => {
+            e.preventDefault();
+            logoutAction();
+          }}
+        >
           <LogOut className="mr-2 h-4 w-4" />
           <span>Sign Out</span>
         </DropdownMenuItem>

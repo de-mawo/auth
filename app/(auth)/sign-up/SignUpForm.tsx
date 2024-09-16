@@ -24,21 +24,36 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import LoadingBtn from "@/components/LoadingBtn";
-import { loginSchema, LoginValues } from "@/lib/validations";
+import { signUpSchema, SignUpValues } from "@/lib/validations";
+import { PasswordInput } from "../password-input";
+import { toast } from "@/hooks/use-toast";
+import { signUpAction } from "../actions";
 
 export function SignUpForm() {
+  const [error, setError] = useState<string>();
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<LoginValues>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<SignUpValues>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  async function onSubmit(values: LoginValues) {
-    console.log(values);
+  async function onSubmit(values: SignUpValues) {
+    setError(undefined);
+    startTransition(async () => {
+      const { error } = await signUpAction(values);
+      if (error) setError(error);
+      toast({
+        variant: "destructive",
+        title: `${error}`,
+      });
+    });
+    toast({
+      title: `Sign Up Successful`,
+    });
   }
 
   return (
@@ -84,7 +99,7 @@ export function SignUpForm() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input placeholder="Password" {...field} />
+                      <PasswordInput placeholder="Password" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -96,9 +111,9 @@ export function SignUpForm() {
             </form>
           </Form>
         </div>
-        <div className="text-muted-foreground mt-4 text-center text-sm">
+        <div className="mt-4 text-center text-sm text-muted-foreground">
           Already have an account?{" "}
-          <Link href="#" className="underline">
+          <Link href="/login" className="underline">
             Log in
           </Link>
         </div>
